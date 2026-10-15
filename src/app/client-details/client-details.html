@@ -1,0 +1,104 @@
+
+<section class="details-page">
+  <div class="page-header">
+    <div>
+      <h1>Détails du client</h1>
+      <p>Consultez les informations complètes du client.</p>
+    </div>
+
+    <button type="button" class="back-button" (click)="backToList()">
+      Retour à la liste
+    </button>
+  </div>
+
+  @if (loading) {
+    <p class="info">Chargement des informations...</p>
+  }
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (!loading && client) {
+    <div class="details-card">
+      <div class="details-header">
+        <div>
+          <h2>{{ client.nom }} {{ client.prenom }}</h2>
+          <span class="status">{{ client.statut || 'ACTIF' }}</span>
+        </div>
+
+        @if (auth.hasRole('GESTIONNAIRE')) {
+          <button
+            type="button"
+            class="edit-button"
+            (click)="editClient()"
+          >
+            Modifier
+          </button>
+        }
+      </div>
+
+      <div class="details-grid">
+        <div class="detail-item">
+          <span>CIN</span>
+          <strong>{{ client.cin || '—' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Nom</span>
+          <strong>{{ client.nom || '—' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Prénom</span>
+          <strong>{{ client.prenom || '—' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Date de naissance</span>
+          <strong>{{ client.dateNaissance || '—' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Téléphone</span>
+          <strong>{{ client.telephone || '—' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Email</span>
+          <strong>{{ client.email || '—' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Adresse</span>
+          <strong>{{ client.adresse || '—' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Ville</span>
+          <strong>{{ client.ville || '—' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Code postal</span>
+          <strong>{{ client.codePostal || '—' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Profession</span>
+          <strong>{{ client.profession || '—' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Agence</span>
+          <strong>{{ client.agence?.nom || '—' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Statut</span>
+          <strong>{{ client.statut || 'ACTIF' }}</strong>
+        </div>
+      </div>
+    </div>
+  }
+</section>

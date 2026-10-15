@@ -1,0 +1,28 @@
+
+<main class="container">
+  <header class="topbar">
+    <h1>Gestion des clients</h1>
+
+    <button class="logout-btn" (click)="logout()">
+      Se déconnecter
+    </button>
+  </header>
+
+  <section class="welcome">
+    <h2>Bienvenue {{ auth.getUsername() }} !</h2>
+
+    <p>
+      Vous êtes connecté avec succès.
+    </p>
+
+    <p>
+      Votre rôle :
+      <strong>
+        {{ auth.hasRole('GESTIONNAIRE') ? 'GESTIONNAIRE' :
+           auth.hasRole('LECTEUR') ? 'LECTEUR' : 'Aucun rôle reconnu' }}
+      </strong>
+    </p>
+  </section>
+
+  <router-outlet />
+</main>
