@@ -1,49 +1,61 @@
-
-<section class="clients-page">
+ <section class="clients-page">
   <div class="page-header">
     <div>
       <h1>Liste des clients</h1>
-      <p>Consultez et recherchez les clients enregistrés.</p>
+      <p>Consultez et gérez vos clients.</p>
     </div>
 
     @if (auth.hasRole('GESTIONNAIRE')) {
-      <button
-        type="button"
-        class="add-button"
-        (click)="addClient()"
-      >
-        + Ajouter un client
+      <button type="button" class="add-button" (click)="addClient()">
+        <span class="plus-icon">+</span>
+        Ajouter un client
       </button>
     }
   </div>
 
-  <div class="toolbar">
+  <section class="filters-card">
+    <h2>Filtres de recherche</h2>
+
     <form (ngSubmit)="searchClients()" class="search-form">
-      <input
-        type="text"
-        name="cin"
-        [(ngModel)]="cin"
-        placeholder="Rechercher par CIN..."
-      />
+      <div class="filter-field">
+        <label for="filter-cin">CIN</label>
+        <input
+          id="filter-cin"
+          type="text"
+          name="cin"
+          [(ngModel)]="cin"
+          placeholder="Saisissez un CIN"
+        />
+      </div>
 
-      <input
-        type="text"
-        name="nomPrenom"
-        [(ngModel)]="nomPrenom"
-        placeholder="Nom ou prénom..."
-      />
+      <div class="filter-field">
+        <label for="filter-name">Nom ou prénom</label>
+        <input
+          id="filter-name"
+          type="text"
+          name="nomPrenom"
+          [(ngModel)]="nomPrenom"
+          placeholder="Saisissez un nom ou un prénom"
+        />
+      </div>
 
-      <select name="agenceId" [(ngModel)]="agenceId">
-        <option [ngValue]="null">Toutes les agences</option>
+      <div class="filter-field">
+        <label for="filter-agence">Agence</label>
+        <select id="filter-agence" name="agenceId" [(ngModel)]="agenceId">
+          <option [ngValue]="null">Toutes les agences</option>
+          @for (agence of agences; track agence.id) {
+            <option [ngValue]="agence.id">{{ agence.nom }}</option>
+          }
+        </select>
+      </div>
 
-        @for (agence of agences; track agence.id) {
-          <option [ngValue]="agence.id">
-            {{ agence.nom }}
-          </option>
-        }
-      </select>
-
-      <button type="submit">Rechercher</button>
+      <button type="submit" class="search-button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m16 16 4 4"></path>
+        </svg>
+        Rechercher
+      </button>
 
       <button
         type="button"
@@ -53,9 +65,7 @@
         Réinitialiser
       </button>
     </form>
-
-    <span class="total">{{ totalElements }} client(s)</span>
-  </div>
+  </section>
 
   @if (loading) {
     <p class="info">Chargement des clients...</p>
@@ -71,11 +81,8 @@
         <thead>
           <tr>
             <th>CIN</th>
-            <th>Nom</th>
-            <th>Prénom</th>
+            <th>Nom et prénom</th>
             <th>Téléphone</th>
-            <th>Email</th>
-            <th>Ville</th>
             <th>Agence</th>
             <th>Statut</th>
             <th>Actions</th>
@@ -86,67 +93,43 @@
           @for (client of clients; track client.id) {
             <tr>
               <td>{{ client.cin }}</td>
-              <td>{{ client.nom }}</td>
-              <td>{{ client.prenom }}</td>
+              <td class="client-name">{{ client.prenom }} {{ client.nom }}</td>
               <td>{{ client.telephone }}</td>
-              <td>{{ client.email || '—' }}</td>
-              <td>{{ client.ville || '—' }}</td>
               <td>{{ client.agence?.nom || '—' }}</td>
-
               <td>
-                <span class="status">
+                <span
+                  class="status"
+                  [class.inactive]="client.statut?.toUpperCase() === 'INACTIF'"
+                >
                   {{ client.statut || 'ACTIF' }}
                 </span>
               </td>
-
               <td>
                 <div class="action-buttons">
                   <button
                     type="button"
-                    class="view-button"
+                    class="icon-button"
                     title="Consulter"
                     aria-label="Consulter le client"
                     (click)="viewClient(client.id)"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="19"
-                      height="19"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
-                      <circle cx="12" cy="12" r="3" />
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
                     </svg>
                   </button>
 
                   @if (auth.hasRole('GESTIONNAIRE')) {
                     <button
                       type="button"
-                      class="edit-button"
+                      class="icon-button"
                       title="Modifier"
                       aria-label="Modifier le client"
                       (click)="editClient(client.id)"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M12 20h9" />
-                        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z" />
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 20h9"></path>
+                        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path>
                       </svg>
                     </button>
                   }
@@ -155,35 +138,42 @@
             </tr>
           } @empty {
             <tr>
-              <td colspan="9" class="empty">
-                Aucun client trouvé.
-              </td>
+              <td colspan="6" class="empty">Aucun client trouvé.</td>
             </tr>
           }
         </tbody>
       </table>
     </div>
+
+    <div class="table-footer">
+      <span class="results-count">
+        {{ totalElements === 0 ? 0 : page * size + 1 }}
+        –
+        {{ page * size + clients.length }}
+        sur {{ totalElements }} clients
+      </span>
+
+      <div class="pagination">
+        <button
+          type="button"
+          aria-label="Page précédente"
+          (click)="changePage(page - 1)"
+          [disabled]="page === 0"
+        >
+          ‹
+        </button>
+
+        <span>{{ totalPages === 0 ? 0 : page + 1 }}</span>
+
+        <button
+          type="button"
+          aria-label="Page suivante"
+          (click)="changePage(page + 1)"
+          [disabled]="page + 1 >= totalPages"
+        >
+          ›
+        </button>
+      </div>
+    </div>
   }
-
-  <div class="pagination">
-    <button
-      type="button"
-      (click)="changePage(page - 1)"
-      [disabled]="page === 0 || loading"
-    >
-      Précédent
-    </button>
-
-    <span>
-      Page {{ totalPages === 0 ? 0 : page + 1 }} / {{ totalPages }}
-    </span>
-
-    <button
-      type="button"
-      (click)="changePage(page + 1)"
-      [disabled]="page + 1 >= totalPages || loading"
-    >
-      Suivant
-    </button>
-  </div>
 </section>
