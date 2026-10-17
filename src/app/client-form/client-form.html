@@ -1,15 +1,11 @@
 <section class="form-page">
   <div class="form-header">
     <div>
-    <h1>{{ clientId === null ? 'Ajouter un client' : 'Modifier un client' }}</h1>
-      <p>Remplissez les informations du nouveau client.</p>
+      <h1>{{ clientId === null ? 'Ajouter un client' : 'Modifier un client' }}</h1>
+      <p>Remplissez les informations du client.</p>
     </div>
 
-    <button
-      type="button"
-      class="btn-secondary"
-      (click)="cancel()"
-    >
+    <button type="button" class="btn-secondary" (click)="cancel()">
       Retour à la liste
     </button>
   </div>
@@ -23,218 +19,238 @@
   }
 
   <form #clientForm="ngForm" (ngSubmit)="submit()" class="client-form">
-    <h2>Informations personnelles</h2>
 
-    <div class="form-grid">
-      <div class="field">
-        <label for="cin">CIN <span>*</span></label>
-        <input
-          id="cin"
-          name="cin"
-          type="text"
-          [(ngModel)]="client.cin"
-          required
-          maxlength="20"
-          placeholder="Ex. AB123456"
-          #cin="ngModel"
-        />
+    <!-- Section 1 : Identification du client -->
+    <section class="form-section">
+      <h2>Identification du client</h2>
 
-        @if (cin.invalid && (cin.touched || submitted)) {
-          @if (cin.errors?.['required']) {
-            <small>Le CIN est obligatoire.</small>
+      <div class="form-grid">
+        <div class="field">
+          <label for="cin">CIN <span>*</span></label>
+          <input
+            id="cin"
+            name="cin"
+            type="text"
+            [(ngModel)]="client.cin"
+            required
+            maxlength="20"
+            placeholder="Ex. AB123456"
+            #cin="ngModel"
+          />
+
+          @if (cin.invalid && (cin.touched || submitted)) {
+            @if (cin.errors?.['required']) {
+              <small>Le CIN est obligatoire.</small>
+            }
           }
-        }
-      </div>
+        </div>
 
-      <div class="field">
-        <label for="nom">Nom <span>*</span></label>
-        <input
-          id="nom"
-          name="nom"
-          type="text"
-          [(ngModel)]="client.nom"
-          required
-          maxlength="100"
-          pattern="^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$"
-          #nom="ngModel"
-        />
+        <div class="field">
+          <label for="nom">Nom <span>*</span></label>
+          <input
+            id="nom"
+            name="nom"
+            type="text"
+            [(ngModel)]="client.nom"
+            required
+            maxlength="100"
+            pattern="^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$"
+            #nom="ngModel"
+          />
 
-        @if (nom.invalid && (nom.touched || submitted)) {
-          @if (nom.errors?.['required']) {
-            <small>Le nom est obligatoire.</small>
-          } @else if (nom.errors?.['pattern']) {
-            <small>Le nom contient des caractères invalides.</small>
+          @if (nom.invalid && (nom.touched || submitted)) {
+            @if (nom.errors?.['required']) {
+              <small>Le nom est obligatoire.</small>
+            } @else if (nom.errors?.['pattern']) {
+              <small>Le nom contient des caractères invalides.</small>
+            }
           }
-        }
-      </div>
+        </div>
 
-      <div class="field">
-        <label for="prenom">Prénom <span>*</span></label>
-        <input
-          id="prenom"
-          name="prenom"
-          type="text"
-          [(ngModel)]="client.prenom"
-          required
-          maxlength="100"
-          pattern="^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$"
-          #prenom="ngModel"
-        />
+        <div class="field">
+          <label for="prenom">Prénom <span>*</span></label>
+          <input
+            id="prenom"
+            name="prenom"
+            type="text"
+            [(ngModel)]="client.prenom"
+            required
+            maxlength="100"
+            pattern="^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$"
+            #prenom="ngModel"
+          />
 
-        @if (prenom.invalid && (prenom.touched || submitted)) {
-          @if (prenom.errors?.['required']) {
-            <small>Le prénom est obligatoire.</small>
-          } @else if (prenom.errors?.['pattern']) {
-            <small>Le prénom contient des caractères invalides.</small>
+          @if (prenom.invalid && (prenom.touched || submitted)) {
+            @if (prenom.errors?.['required']) {
+              <small>Le prénom est obligatoire.</small>
+            } @else if (prenom.errors?.['pattern']) {
+              <small>Le prénom contient des caractères invalides.</small>
+            }
           }
-        }
-      </div>
+        </div>
 
-      <div class="field">
-        <label for="dateNaissance">Date de naissance</label>
-        <input
-          id="dateNaissance"
-          type="date"
-          name="dateNaissance"
-          [(ngModel)]="client.dateNaissance"
-          [max]="today"
-          #dateNaissance="ngModel"
-        />
+        <div class="field">
+          <label for="dateNaissance">Date de naissance</label>
+          <input
+            id="dateNaissance"
+            name="dateNaissance"
+            type="date"
+            [(ngModel)]="client.dateNaissance"
+            [max]="today"
+            #dateNaissance="ngModel"
+          />
 
-        @if (dateNaissance.invalid && (dateNaissance.touched || submitted)) {
-          <small>La date de naissance ne peut pas être dans le futur.</small>
-        }
-      </div>
-
-      <div class="field">
-        <label for="telephone">Téléphone <span>*</span></label>
-        <input
-          id="telephone"
-          type="tel"
-          name="telephone"
-          [(ngModel)]="client.telephone"
-          required
-          maxlength="13"
-          pattern="(0[67][0-9]{8}|\+212[67][0-9]{8})"
-          placeholder="Ex. 0612345678"
-          #telephone="ngModel"
-        />
-
-        @if (telephone.invalid && (telephone.touched || submitted)) {
-          @if (telephone.errors?.['required']) {
-            <small>Le téléphone est obligatoire.</small>
-          } @else if (telephone.errors?.['pattern']) {
-            <small>
-              Numéro invalide
-            </small>
+          @if (dateNaissance.invalid && (dateNaissance.touched || submitted)) {
+            <small>La date de naissance ne peut pas être dans le futur.</small>
           }
-        }
+        </div>
       </div>
+    </section>
 
-      <div class="field">
-        <label for="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          name="email"
-          [(ngModel)]="client.email"
-          email
-          maxlength="150"
-          #email="ngModel"
-          placeholder="client@example.com"
-        />
+    <!-- Section 2 : Coordonnées -->
+    <section class="form-section">
+      <h2>Coordonnées</h2>
 
-        @if (email.invalid && (email.touched || submitted)) {
-          <small>Veuillez saisir une adresse email valide.</small>
-        }
-      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="telephone">Téléphone <span>*</span></label>
+          <input
+            id="telephone"
+            name="telephone"
+            type="tel"
+            [(ngModel)]="client.telephone"
+            required
+            maxlength="13"
+            pattern="(0[67][0-9]{8}|\+212[67][0-9]{8})"
+            placeholder="Ex. 0612345678"
+            #telephone="ngModel"
+          />
 
-      <div class="field">
-        <label for="adresse">Adresse</label>
-        <input
-          id="adresse"
-          name="adresse"
-          type="text"
-          [(ngModel)]="client.adresse"
-          maxlength="255"
-        />
-      </div>
-
-      <div class="field">
-        <label for="ville">Ville</label>
-        <input
-          id="ville"
-          name="ville"
-          type="text"
-          [(ngModel)]="client.ville"
-          maxlength="100"
-          pattern="^[A-Za-zÀ-ÖØ-öø-ÿ' -]*$"
-          #ville="ngModel"
-        />
-
-        @if (ville.invalid && (ville.touched || submitted)) {
-          <small>Veuillez saisir un nom de ville valide.</small>
-        }
-      </div>
-
-      <div class="field">
-        <label for="codePostal">Code postal</label>
-        <input
-          id="codePostal"
-          name="codePostal"
-          type="text"
-          [(ngModel)]="client.codePostal"
-          maxlength="10"
-          pattern="^[0-9]*$"
-          #codePostal="ngModel"
-        />
-
-        @if (codePostal.invalid && (codePostal.touched || submitted)) {
-          <small>Le code postal doit contenir uniquement des chiffres.</small>
-        }
-      </div>
-
-      <div class="field">
-        <label for="profession">Profession</label>
-        <input
-          id="profession"
-          name="profession"
-          type="text"
-          [(ngModel)]="client.profession"
-          maxlength="100"
-        />
-      </div>
-
-      <div class="field">
-        <label for="agenceId">Agence</label>
-        <select
-          id="agenceId"
-          name="agenceId"
-          [(ngModel)]="client.agenceId"
-        >
-          <option [ngValue]="null">Sélectionner une agence</option>
-
-          @for (agence of agences; track agence.id) {
-            <option [ngValue]="agence.id">
-              {{ agence.nom }}
-            </option>
+          @if (telephone.invalid && (telephone.touched || submitted)) {
+            @if (telephone.errors?.['required']) {
+              <small>Le téléphone est obligatoire.</small>
+            } @else if (telephone.errors?.['pattern']) {
+              <small>Numéro de téléphone invalide.</small>
+            }
           }
-        </select>
-      </div>
+        </div>
 
-      <div class="field">
-        <label for="statut">Statut</label>
-        <select
-          id="statut"
-          name="statut"
-          [(ngModel)]="client.statut"
-          required
-        >
-          <option value="ACTIF">Actif</option>
-          <option value="INACTIF">Inactif</option>
-        </select>
+        <div class="field">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            [(ngModel)]="client.email"
+            email
+            maxlength="150"
+            placeholder="client@example.com"
+            #email="ngModel"
+          />
+
+          @if (email.invalid && (email.touched || submitted)) {
+            <small>Veuillez saisir une adresse email valide.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="adresse">Adresse</label>
+          <input
+            id="adresse"
+            name="adresse"
+            type="text"
+            [(ngModel)]="client.adresse"
+            maxlength="255"
+            placeholder="Adresse du client"
+          />
+        </div>
+
+        <div class="field">
+          <label for="ville">Ville</label>
+          <input
+            id="ville"
+            name="ville"
+            type="text"
+            [(ngModel)]="client.ville"
+            maxlength="100"
+            pattern="^[A-Za-zÀ-ÖØ-öø-ÿ' -]*$"
+            placeholder="Ex. Casablanca"
+            #ville="ngModel"
+          />
+
+          @if (ville.invalid && (ville.touched || submitted)) {
+            <small>Veuillez saisir un nom de ville valide.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="codePostal">Code postal</label>
+          <input
+            id="codePostal"
+            name="codePostal"
+            type="text"
+            [(ngModel)]="client.codePostal"
+            maxlength="10"
+            pattern="^[0-9]*$"
+            placeholder="Ex. 20000"
+            #codePostal="ngModel"
+          />
+
+          @if (codePostal.invalid && (codePostal.touched || submitted)) {
+            <small>Le code postal doit contenir uniquement des chiffres.</small>
+          }
+        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Section 3 : Informations professionnelles -->
+    <section class="form-section">
+      <h2>Informations professionnelles</h2>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="profession">Profession</label>
+          <input
+            id="profession"
+            name="profession"
+            type="text"
+            [(ngModel)]="client.profession"
+            maxlength="100"
+            placeholder="Profession du client"
+          />
+        </div>
+
+        <div class="field">
+          <label for="agenceId">Agence</label>
+          <select
+            id="agenceId"
+            name="agenceId"
+            [(ngModel)]="client.agenceId"
+          >
+            <option [ngValue]="null">Sélectionner une agence</option>
+
+            @for (agence of agences; track agence.id) {
+              <option [ngValue]="agence.id">
+                {{ agence.nom }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="statut">Statut <span>*</span></label>
+          <select
+            id="statut"
+            name="statut"
+            [(ngModel)]="client.statut"
+            required
+          >
+            <option value="ACTIF">Actif</option>
+            <option value="INACTIF">Inactif</option>
+          </select>
+        </div>
+      </div>
+    </section>
 
     <p class="required-note">
       <span>*</span> Champs obligatoires
@@ -254,8 +270,9 @@
         class="btn-primary"
         [disabled]="loading"
       >
-        {{ loading ? 'Enregistrement...' : 'Ajouter le client' }}
+        {{ loading ? 'Enregistrement...' : (clientId === null ? 'Ajouter le client' : 'Enregistrer les modifications') }}
       </button>
     </div>
+
   </form>
 </section>
